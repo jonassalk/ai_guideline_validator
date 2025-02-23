@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <style>
+        /* Basic styling for the upload form */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .message {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Upload PDF or DOCX</h2>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" accept=".pdf,.docx,.doc" required> 
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="validateDiv" class="section">
+        <div class="button-container">
+            <button type="button" id="updateButton">Update Guidelines</button>
+        </div>
+    </div>
+
+    <div id="textBoxDiv" class="section">
+        <textarea id="responseBox" class="text-box" readonly></textarea>
+
+        <div id="modifyButtonContainer" style="display:none;">
+            <button id="modifyButton">Modify PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // Handle form submission
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+    
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+    
+            fetch("/upload", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))  // Capture status and body
+            .then(({ status, body }) => {
+                if (status === 200) {
+                    // Handle success
+                    alert(body.message);
+                } else {
+                    // Handle error based on the response code
+                    alert(body.message);
+                }
+            })
+            .catch(error => {
+                alert("Error uploading file: " + error);
+            });a
+        });
+    </script>
+    
+
+</body>
+</html>
